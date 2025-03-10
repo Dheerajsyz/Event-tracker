@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- View Events -->
+    <item
+        android:id="@+id/nav_view_events"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="View Events"
+        tools:ignore="HardcodedText" />
+
+    <!-- SMS Alerts -->
+    <item
+        android:id="@+id/nav_sms_alerts"
+        android:icon="@android:drawable/ic_menu_send"
+        android:title="SMS Alerts"
+        tools:ignore="HardcodedText" />
+
+
+    <!-- Logout -->
+    <item
+        android:id="@+id/nav_logout"
+        android:icon="@android:drawable/ic_menu_close_clear_cancel"
+        android:title="Logout"
+        tools:ignore="HardcodedText" />
+
+</menu>

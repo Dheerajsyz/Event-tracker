@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "237327601822",
+    "project_id": "cs499-snhu",
+    "storage_bucket": "cs499-snhu.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:237327601822:android:e63c823c9586a444596b8f",
+        "android_client_info": {
+          "package_name": "com.dheeraj.snhu_dheeraj_kollapaneni"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDe8g0uD2SXPPYV9CM9Za2vysBfVYKAYCs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">SNHU_Dheeraj_Kollapaneni</string>
+    <string name="new_event">New Event Added: Event %1$d</string>
+    <string name="edit_button">Edit</string>
+    <string name="delete_button">Delete</string>
+    <string name="event_list_title">List of Upcoming Events</string>
+    <string name="add_event">Add Event</string>
+    <string name="enable_sms_notifications">Enable SMS Notifications</string>
+    <string name="allow_sms_permission_description">Allow SMS permissions to receive event details directly on your device.</string>
+    <string name="enable_sms_button">Enable SMS</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="enter_phone">Enter Phone Number</string>
+    <string name="save_profile">Save Profile</string>
+    <string name="enter_username">Enter Username</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="event_name">Event Name</string>
+    <string name="event_date">Event Date</string>
+    <string name="edit_event">Edit Event</string>
+    <string name="delete_event">Delete Event</string>
+    <string name="event_time">Event Time</string>
+    <string name="disable_sms_notifications">Disable SMS Notifications</string>
+</resources>
