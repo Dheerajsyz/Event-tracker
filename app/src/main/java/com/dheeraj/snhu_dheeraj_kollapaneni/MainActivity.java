@@ -21,16 +21,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event_list); // Uses the correct layout
+        setContentView(R.layout.activity_main);
 
         auth = FirebaseAuth.getInstance();
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-
-        // Set navigation listener
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Enable hamburger menu toggle
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
@@ -39,14 +36,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.nav_logout) {
+        if (item.getItemId() == R.id.nav_view_events) {
+            startActivity(new Intent(MainActivity.this, EventListActivity.class));
+        } else if (item.getItemId() == R.id.nav_sms_alerts) {
+            startActivity(new Intent(MainActivity.this, SmsPermissionActivity.class));
+        } else if (item.getItemId() == R.id.nav_logout) {
             auth.signOut();
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
             finish();
-        } else if (item.getItemId() == R.id.nav_sms_alerts) {
-            startActivity(new Intent(MainActivity.this, SmsPermissionActivity.class));
-        } else if (item.getItemId() == R.id.nav_view_events) {
-            startActivity(new Intent(MainActivity.this, EventListActivity.class));
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
