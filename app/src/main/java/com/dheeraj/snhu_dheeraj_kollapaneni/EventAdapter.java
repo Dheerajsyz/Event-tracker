@@ -1,6 +1,5 @@
 package com.dheeraj.snhu_dheeraj_kollapaneni;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,16 +15,25 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
     private List<Event> eventList;
     private final OnEventClickListener onEventClickListener;
+    private boolean isAdmin;
 
-    public EventAdapter(List<Event> eventList, OnEventClickListener listener) {
+    public EventAdapter(List<Event> eventList, OnEventClickListener listener, boolean isAdmin) {
         this.eventList = eventList;
         this.onEventClickListener = listener;
+        this.isAdmin = isAdmin;
+    }
+
+    // Call this if the user role changes after adapter creation
+    public void setAdmin(boolean admin) {
+        this.isAdmin = admin;
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_list_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.event_list_item, parent, false);
         return new EventViewHolder(view);
     }
 
@@ -37,6 +45,16 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.eventDate.setText(event.getDate());
         holder.eventTime.setText(event.getTime());
 
+        // Show or hide the delete button based on isAdmin
+        if (isAdmin) {
+            holder.btnDelete.setVisibility(View.VISIBLE);
+            holder.btnEdit.setVisibility(View.VISIBLE); // If you want admins to edit from here too
+        } else {
+            holder.btnDelete.setVisibility(View.GONE);
+            // If you also want to hide edit for normal users, do:
+            // holder.btnEdit.setVisibility(View.GONE);
+        }
+
         holder.btnEdit.setOnClickListener(v -> onEventClickListener.onEditClick(event));
         holder.btnDelete.setOnClickListener(v -> onEventClickListener.onDeleteClick(event));
     }
@@ -46,12 +64,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         return eventList.size();
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void updateEventList(List<Event> events) {
-        this.eventList = events;
-        notifyDataSetChanged(); // Notify the adapter of data changes
-    }
-
     public static class EventViewHolder extends RecyclerView.ViewHolder {
 
         TextView eventName, eventDate, eventTime;
@@ -59,11 +71,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
-
             eventName = itemView.findViewById(R.id.tvEventName);
             eventDate = itemView.findViewById(R.id.tvEventDate);
             eventTime = itemView.findViewById(R.id.tvEventTime);
-
             btnEdit = itemView.findViewById(R.id.btnEdit);
             btnDelete = itemView.findViewById(R.id.btnDelete);
         }

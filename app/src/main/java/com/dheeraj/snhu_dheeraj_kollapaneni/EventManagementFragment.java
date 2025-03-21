@@ -1,11 +1,11 @@
 package com.dheeraj.snhu_dheeraj_kollapaneni;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,48 +20,70 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A fragment that displays ALL events in the system.
+ * Admin can edit or delete them.
+ */
 public class EventManagementFragment extends Fragment {
 
     private static final String TAG = "EventManagementFragment";
-    private TextView tvNoEvents;
+
     private RecyclerView recyclerView;
     private EventAdapter eventAdapter;
     private FirebaseFirestore db;
     private List<Event> allEvents;
 
-    public EventManagementFragment() {}
+    public EventManagementFragment() {
+        // Required empty public constructor
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
+        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_event_management, container, false);
 
-        tvNoEvents = view.findViewById(R.id.tvNoEvents);
         recyclerView = view.findViewById(R.id.recyclerViewAllEvents);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         db = FirebaseFirestore.getInstance();
         allEvents = new ArrayList<>();
+
+        // Pass true for isAdmin so the adapter shows the delete/edit buttons
         eventAdapter = new EventAdapter(allEvents, new EventAdapter.OnEventClickListener() {
             @Override
             public void onEditClick(Event event) {
-                // Admin can edit an event. If you want to reuse AddEditEventActivity, do so:
-                // Example:
-                // Intent intent = new Intent(getContext(), AddEditEventActivity.class);
-                // intent.putExtra("event_id", event.getEventId());
-                // startActivity(intent);
+                // Launch AddEditEventActivity so admin can edit
+                Intent intent = new Intent(getContext(), AddEditEventActivity.class);
+                intent.putExtra("event_id", event.getEventId());
+                startActivity(intent);
             }
 
             @Override
             public void onDeleteClick(Event event) {
-                deleteEvent(event);
+                // Delete the event from Firestore
+                db.collection("events")
+                        .document(event.getEventId())
+                        .delete()
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(getContext(), "Event deleted", Toast.LENGTH_SHORT).show();
+                            fetchAllEvents();
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(getContext(), "Failed to delete event", Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, "Error deleting event", e);
+                        });
             }
-        });
+        }, true); // true = admin mode
+
         recyclerView.setAdapter(eventAdapter);
 
+        // Fetch all events in Firestore
         fetchAllEvents();
+
         return view;
     }
 
@@ -76,31 +98,11 @@ public class EventManagementFragment extends Fragment {
                         allEvents.add(event);
                     }
                     eventAdapter.notifyDataSetChanged();
-
-                    if (allEvents.isEmpty()) {
-                        tvNoEvents.setVisibility(View.VISIBLE);
-                    } else {
-                        tvNoEvents.setVisibility(View.GONE);
-                    }
-
-                    Log.d(TAG, "Fetched " + allEvents.size() + " total events");
+                    Log.d(TAG, "Fetched " + allEvents.size() + " total events.");
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(getContext(), "Failed to fetch events", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Error fetching events", e);
-                });
-    }
-
-    private void deleteEvent(Event event) {
-        db.collection("events").document(event.getEventId())
-                .delete()
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(getContext(), "Event deleted", Toast.LENGTH_SHORT).show();
-                    fetchAllEvents();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(getContext(), "Failed to delete event", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Error deleting event", e);
                 });
     }
 }
