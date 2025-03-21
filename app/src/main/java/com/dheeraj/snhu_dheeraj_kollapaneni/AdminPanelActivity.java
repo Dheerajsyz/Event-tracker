@@ -9,18 +9,13 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AdminPanelActivity extends AppCompatActivity {
 
     private static final String TAG = "AdminPanelActivity";
-
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
     private AdminPanelAdapter adminPanelAdapter;
-    private FirebaseAuth auth;
-    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +24,6 @@ public class AdminPanelActivity extends AppCompatActivity {
 
         tabLayout = findViewById(R.id.tabLayout);
         viewPager = findViewById(R.id.viewPager);
-
-        auth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
 
         adminPanelAdapter = new AdminPanelAdapter(this);
         viewPager.setAdapter(adminPanelAdapter);
@@ -47,10 +39,12 @@ public class AdminPanelActivity extends AppCompatActivity {
                 case 2:
                     tab.setText("Event Management");
                     break;
+                default:
+                    tab.setText("Tab " + (position + 1));
             }
         }).attach();
 
-        Log.d(TAG, "AdminPanelActivity launched");
+        Log.d(TAG, "AdminPanelActivity launched with " + adminPanelAdapter.getItemCount() + " tabs.");
         Toast.makeText(this, "Admin Panel Opened", Toast.LENGTH_SHORT).show();
     }
 }

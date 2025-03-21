@@ -5,13 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- AppBar with Toolbar and TabLayout -->
+    <!-- AppBar with Toolbar and styled TabLayout -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
+        <!-- Toolbar with title -->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -21,19 +22,25 @@
             app:titleTextColor="@android:color/white"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
+        <!-- Styled TabLayout for clear distinction -->
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:elevation="4dp"
+            android:padding="8dp"
             app:tabGravity="fill"
             app:tabMode="fixed"
             app:tabIndicatorColor="@android:color/white"
-            app:tabTextColor="@android:color/white"
-            android:contentDescription="Admin panel tabs" />
+            app:tabIndicatorHeight="4dp"
+            app:tabSelectedTextColor="@android:color/white"
+            app:tabTextColor="@android:color/darker_gray"
+            android:contentDescription="Admin Panel Tabs" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- ViewPager2 for displaying the 3 admin fragments -->
+    <!-- ViewPager2 for hosting the admin fragments -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="match_parent"

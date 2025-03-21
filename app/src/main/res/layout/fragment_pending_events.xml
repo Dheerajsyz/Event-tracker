@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Title for clarity -->
+    <!-- Header for Pending Events -->
     <TextView
         android:id="@+id/tvPendingHeader"
         android:layout_width="wrap_content"
@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp" />
 
-    <!-- TextView if no pending events found -->
+    <!-- Shown if no pending events exist -->
     <TextView
         android:id="@+id/tvNoPending"
         android:layout_width="wrap_content"
@@ -31,6 +31,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp" />
 
+    <!-- RecyclerView for pending events -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewPendingEvents"
         android:layout_width="match_parent"

@@ -25,7 +25,7 @@ public class PendingEventsFragment extends Fragment {
     private static final String TAG = "PendingEventsFragment";
     private TextView tvNoPending;
     private RecyclerView recyclerView;
-    private EventAdapter eventAdapter;
+    private PendingEventAdapter adapter;
     private FirebaseFirestore db;
     private List<Event> pendingEvents;
 
@@ -44,27 +44,25 @@ public class PendingEventsFragment extends Fragment {
 
         db = FirebaseFirestore.getInstance();
         pendingEvents = new ArrayList<>();
-        eventAdapter = new EventAdapter(pendingEvents, new EventAdapter.OnEventClickListener() {
+        adapter = new PendingEventAdapter(pendingEvents, new PendingEventAdapter.OnPendingEventActionListener() {
             @Override
-            public void onEditClick(Event event) {
-                // Admin might not edit pending events here, but you can handle if needed
+            public void onApprove(Event event) {
+                approveEvent(event);
             }
 
             @Override
-            public void onDeleteClick(Event event) {
-                // "Delete" is effectively "reject" in this scenario
-                handleEventAction(event, "reject");
+            public void onDecline(Event event) {
+                declineEvent(event);
             }
         });
-        recyclerView.setAdapter(eventAdapter);
+        recyclerView.setAdapter(adapter);
 
         fetchPendingEvents();
         return view;
     }
 
     private void fetchPendingEvents() {
-        db.collection("events")
-                .whereEqualTo("status", "pending")
+        db.collection("events").whereEqualTo("status", "pending")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     pendingEvents.clear();
@@ -73,14 +71,12 @@ public class PendingEventsFragment extends Fragment {
                         event.setEventId(doc.getId());
                         pendingEvents.add(event);
                     }
-                    eventAdapter.notifyDataSetChanged();
-
+                    adapter.notifyDataSetChanged();
                     if (pendingEvents.isEmpty()) {
                         tvNoPending.setVisibility(View.VISIBLE);
                     } else {
                         tvNoPending.setVisibility(View.GONE);
                     }
-
                     Log.d(TAG, "Fetched " + pendingEvents.size() + " pending events");
                 })
                 .addOnFailureListener(e -> {
@@ -89,18 +85,29 @@ public class PendingEventsFragment extends Fragment {
                 });
     }
 
-    private void handleEventAction(Event event, String action) {
-        if (action.equals("reject")) {
-            db.collection("events").document(event.getEventId()).delete()
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(getContext(), "Event rejected", Toast.LENGTH_SHORT).show();
-                        fetchPendingEvents();
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(getContext(), "Failed to reject event", Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, "Error rejecting event", e);
-                    });
-        }
-        // You could add an "approve" path here if you like
+    private void approveEvent(Event event) {
+        db.collection("events").document(event.getEventId())
+                .update("status", "approved")
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(getContext(), "Event approved", Toast.LENGTH_SHORT).show();
+                    fetchPendingEvents();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Failed to approve event", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error approving event", e);
+                });
+    }
+
+    private void declineEvent(Event event) {
+        db.collection("events").document(event.getEventId())
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(getContext(), "Event declined", Toast.LENGTH_SHORT).show();
+                    fetchPendingEvents();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Failed to decline event", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error declining event", e);
+                });
     }
 }

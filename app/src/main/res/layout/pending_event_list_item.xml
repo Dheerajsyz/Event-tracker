@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <!-- Event Name -->
+    <TextView
+        android:id="@+id/tvEventName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Event Name"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnApprove"
+        android:ellipsize="end"
+        android:maxLines="1"/>
+
+    <!-- Event Date -->
+    <TextView
+        android:id="@+id/tvEventDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event Date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvEventName" />
+
+    <!-- Event Time -->
+    <TextView
+        android:id="@+id/tvEventTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event Time"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvEventDate" />
+
+    <!-- Approve Button -->
+    <Button
+        android:id="@+id/btnApprove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Approve"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Decline Button -->
+    <Button
+        android:id="@+id/btnDecline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Decline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnApprove"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

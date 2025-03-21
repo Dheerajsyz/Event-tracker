@@ -19,14 +19,14 @@ public class AdminPanelAdapter extends FragmentStateAdapter {
             case 1:
                 return new PendingEventsFragment();
             case 2:
-            default:
                 return new EventManagementFragment();
+            default:
+                return new UserManagementFragment();
         }
     }
 
     @Override
     public int getItemCount() {
-        // We have 3 fragments
-        return 3;
+        return 3;  // Three tabs
     }
 }
