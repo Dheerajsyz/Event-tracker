@@ -48,6 +48,7 @@
         <activity android:name=".MainActivity" android:exported="true" />
         <activity android:name=".SignUpActivity" android:exported="true" />
         <activity android:name=".AddEditEventActivity" android:exported="true" />
+        <activity android:name=".AdminPanelActivity" android:exported="true" />
 
     </application>
 

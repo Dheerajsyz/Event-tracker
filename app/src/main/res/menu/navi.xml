@@ -2,12 +2,7 @@
 <menu xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- View Events -->
-    <item
-        android:id="@+id/nav_view_events"
-        android:icon="@android:drawable/ic_menu_agenda"
-        android:title="View Events"
-        tools:ignore="HardcodedText" />
+
 
     <!-- SMS Alerts -->
     <item
@@ -16,6 +11,18 @@
         android:title="SMS Alerts"
         tools:ignore="HardcodedText" />
 
+    <item
+        android:id="@+id/nav_admin_panel"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:title="Admin Panel"
+        tools:ignore="HardcodedText" />
+
+    <item
+        android:id="@+id/nav_events"
+        android:title="View Events"
+        android:icon="@android:drawable/ic_menu_agenda" />
+
+
 
     <!-- Logout -->
     <item
@@ -23,5 +30,6 @@
         android:icon="@android:drawable/ic_menu_close_clear_cancel"
         android:title="Logout"
         tools:ignore="HardcodedText" />
+
 
 </menu>
