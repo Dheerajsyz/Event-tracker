@@ -1,5 +1,6 @@
 package com.dheeraj.snhu_dheeraj_kollapaneni;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -30,6 +32,7 @@ public class EventListActivity extends AppCompatActivity
         NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "EventListActivity";
+
     private RecyclerView recyclerView;
     private EventAdapter eventAdapter;
     private List<Event> eventList;
@@ -66,13 +69,11 @@ public class EventListActivity extends AppCompatActivity
         recyclerView = findViewById(R.id.recyclerViewEvents);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         eventList = new ArrayList<>();
-
-        // Initially, we don’t know if user is admin yet, so pass false.
-        // We’ll update it once we fetchUserRole.
+        // Initially assume not admin. We'll update later after we fetch the role.
         eventAdapter = new EventAdapter(eventList, this, false);
         recyclerView.setAdapter(eventAdapter);
 
-        // Setup FAB
+        // Setup FloatingActionButton
         fabAddEvent = findViewById(R.id.fabAddEvent);
         fabAddEvent.setOnClickListener(v -> {
             Intent intent = new Intent(EventListActivity.this, AddEditEventActivity.class);
@@ -102,32 +103,31 @@ public class EventListActivity extends AppCompatActivity
                         isAdmin = "admin".equalsIgnoreCase(currentUserRole);
                         Log.d(TAG, "Fetched user role: " + currentUserRole);
 
-                        // Update the adapter so it knows if user is admin
+                        // Update adapter so it knows if user is admin
                         eventAdapter.setAdmin(isAdmin);
 
-                        // Update navigation menu: hide admin panel if not admin
+                        // Update nav menu: hide admin panel if not admin
                         Menu menu = navigationView.getMenu();
                         MenuItem adminItem = menu.findItem(R.id.nav_admin_panel);
                         adminItem.setVisible(isAdmin);
 
-                        // Now that we know the role, fetch the appropriate events
+                        // Now fetch events based on role
                         fetchEvents();
                     } else {
                         Log.d(TAG, "User document does not exist");
-                        fetchEvents(); // fallback to normal user view
+                        fetchEvents(); // fallback to normal user
                     }
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(EventListActivity.this, "Failed to fetch user role", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Error fetching user role", e);
-                    // fallback to normal user view
-                    fetchEvents();
+                    fetchEvents(); // fallback
                 });
     }
 
     private void fetchEvents() {
-        // If admin, show all events. If not, show only approved events.
         if (isAdmin) {
+            // Admin sees ALL events
             db.collection("events").addSnapshotListener((snapshots, e) -> {
                 if (e != null) {
                     Toast.makeText(EventListActivity.this, "Error loading events", Toast.LENGTH_SHORT).show();
@@ -144,7 +144,7 @@ public class EventListActivity extends AppCompatActivity
                 eventAdapter.notifyDataSetChanged();
             });
         } else {
-            // Normal user: only see "approved" events
+            // Normal user sees only APPROVED events
             db.collection("events")
                     .whereEqualTo("status", "approved")
                     .addSnapshotListener((snapshots, e) -> {
@@ -167,8 +167,8 @@ public class EventListActivity extends AppCompatActivity
 
     @Override
     public void onEditClick(Event event) {
-        // If you want normal users to be able to edit, keep this.
-        // If you don't, you can hide the edit button as well for non-admin.
+        // Only called if user sees an Edit button (i.e., if isAdmin is true
+        // or you haven't hidden the button for normal users).
         Intent intent = new Intent(EventListActivity.this, AddEditEventActivity.class);
         intent.putExtra("event_id", event.getEventId());
         startActivity(intent);
@@ -176,13 +176,14 @@ public class EventListActivity extends AppCompatActivity
 
     @Override
     public void onDeleteClick(Event event) {
-        // Only admins see this button, so we can just delete
+        // Only admins see the delete button
         db.collection("events").document(event.getEventId())
                 .delete()
                 .addOnSuccessListener(aVoid -> fetchEvents())
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error deleting event", Toast.LENGTH_SHORT).show()
-                );
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error deleting event", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error deleting event", e);
+                });
     }
 
     @Override
@@ -192,15 +193,26 @@ public class EventListActivity extends AppCompatActivity
             // Admin only
             startActivity(new Intent(EventListActivity.this, AdminPanelActivity.class));
         } else if (id == R.id.nav_events) {
-            // We are already in the event list.
+            // Already here, or you can refresh
         } else if (id == R.id.nav_sms_alerts) {
             startActivity(new Intent(EventListActivity.this, SmsPermissionActivity.class));
         } else if (id == R.id.nav_logout) {
-            mAuth.signOut();
-            startActivity(new Intent(EventListActivity.this, LoginActivity.class));
-            finish();
+            confirmLogout();
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void confirmLogout() {
+        new AlertDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Are you sure you want to logout?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    mAuth.signOut();
+                    startActivity(new Intent(EventListActivity.this, LoginActivity.class));
+                    finish();
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 }

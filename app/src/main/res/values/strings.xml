@@ -23,4 +23,5 @@
     <string name="delete_event">Delete Event</string>
     <string name="event_time">Event Time</string>
     <string name="disable_sms_notifications">Disable SMS Notifications</string>
+    <string name="default_web_client_id">237327601822-j1opfcsqijt00mb9eoola04putn7ondb.apps.googleusercontent.com</string>
 </resources>
