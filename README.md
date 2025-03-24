@@ -26,9 +26,10 @@ To strengthen access control, I implemented **role-based authorization**:
 - Admins can manage users (promote/demote/delete).
 - Regular users can submit/edit events — **but these are hidden until approved**.
 
-📸 Screenshots:  
-![Image 1](images/art1-Picture1.png)  
-![Image 2](images/art1-Picture2.png)
+<div align="center">
+  <img src="images/art1-Picture1.png" width="292" height="616" alt="Artifact 1 Image 1">
+  <img src="images/art1-Picture2.png" width="292" height="616" alt="Artifact 1 Image 2">
+</div>
 
 ---
 
@@ -39,10 +40,11 @@ The Admin Panel includes three tabs:
 2. **Pending Events** – Approve or reject events  
 3. **Event Management** – Full access to all events
 
-📸 Screenshots:  
-![Image 3](images/art1-Picture3.png)  
-![Image 4](images/art1-Picture4.png)  
-![Image 5](images/art1-Picture5.png)
+<div align="center">
+  <img src="images/art1-Picture3.png" width="292" height="616" alt="Artifact 1 Image 3">
+  <img src="images/art1-Picture4.png" width="292" height="616" alt="Artifact 1 Image 4">
+  <img src="images/art1-Picture5.png" width="292" height="616" alt="Artifact 1 Image 5">
+</div>
 
 ---
 
@@ -52,9 +54,10 @@ Key authentication enhancements:
 - **Google Sign-In** for quick login
 - **Forgot Password** via Firebase email reset
 
-📸 Screenshots:  
-![Image 6](images/art1-Picture6.png)  
-![Image 7](images/art1-Picture7.png)
+<div align="center">
+  <img src="images/art1-Picture6.png" width="292" height="616" alt="Artifact 1 Image 6">
+  <img src="images/art1-Picture7.png" width="292" height="616" alt="Artifact 1 Image 7">
+</div>
 
 ---
 
@@ -62,8 +65,9 @@ Key authentication enhancements:
 
 To improve usability, I added a **logout confirmation dialog** to prevent accidental logouts.
 
-📸 Screenshot:  
-![Image 8](images/art1-Picture8.png)
+<div align="center">
+  <img src="images/art1-Picture8.png" width="292" height="616" alt="Artifact 1 Image 8">
+</div>
 
 ---
 
@@ -73,9 +77,10 @@ To improve usability, I added a **logout confirmation dialog** to prevent accide
 - Unapproved events are **hidden from regular users**.
 - Approved events are shown in the public event list.
 
-📸 Screenshots:  
-![Image 9](images/art1-Picture9.png)  
-![Image 10](images/art1-Picture10.png)
+<div align="center">
+  <img src="images/art1-Picture9.png" width="292" height="616" alt="Artifact 1 Image 9">
+  <img src="images/art1-Picture10.png" width="292" height="616" alt="Artifact 1 Image 10">
+</div>
 
 ---
 
@@ -99,4 +104,3 @@ These enhancements demonstrate my ability to:
 - Improve usability and app workflow
 
 ---
-
