@@ -1,64 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
-    tools:ignore="ExtraText">
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardUseCompatPadding="true"
+    android:elevation="4dp">
 
-    <TextView
-        android:id="@+id/tvUsername"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Username"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tvRole"
-        tools:ignore="HardcodedText" />
+        android:orientation="vertical"
+        android:padding="8dp">
 
-    <TextView
-        android:id="@+id/tvEmail"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Username"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tvRole"
-        tools:ignore="HardcodedText" />
+        <!-- Username -->
+        <TextView
+            android:id="@+id/tvUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginBottom="2dp" />
 
-    <TextView
-        android:id="@+id/tvRole"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Role"
-        app:layout_constraintEnd_toStartOf="@id/btnPromote"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="HardcodedText" />
+        <!-- Email -->
+        <TextView
+            android:id="@+id/tvEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            android:textSize="14sp"
+            android:layout_marginBottom="2dp" />
 
-    <Button
-        android:id="@+id/btnPromote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Promote"
-        app:layout_constraintEnd_toStartOf="@id/btnDemote"
-        app:layout_constraintTop_toTopOf="parent" />
+        <!-- Role -->
+        <TextView
+            android:id="@+id/tvRole"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Role"
+            android:textSize="14sp"
+            android:layout_marginBottom="6dp" />
 
-    <Button
-        android:id="@+id/btnDemote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Demote"
-        app:layout_constraintEnd_toStartOf="@id/btnDelete"
-        app:layout_constraintTop_toTopOf="parent" />
+        <!-- Action Buttons in a horizontal row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/btnDelete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Delete"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            <Button
+                android:id="@+id/btnPromote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Promote"
+                android:layout_marginEnd="6dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <Button
+                android:id="@+id/btnDemote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Demote"
+                android:layout_marginEnd="6dp" />
+
+            <Button
+                android:id="@+id/btnDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete" />
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
