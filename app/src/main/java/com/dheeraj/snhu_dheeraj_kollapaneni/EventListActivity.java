@@ -1,11 +1,17 @@
 package com.dheeraj.snhu_dheeraj_kollapaneni;
 
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,6 +31,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 public class EventListActivity extends AppCompatActivity
@@ -36,6 +44,7 @@ public class EventListActivity extends AppCompatActivity
     private RecyclerView recyclerView;
     private EventAdapter eventAdapter;
     private List<Event> eventList;
+    private List<Event> allEvents;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private DrawerLayout drawerLayout;
@@ -43,6 +52,10 @@ public class EventListActivity extends AppCompatActivity
     private NavigationView navigationView;
     private String currentUserRole = "user"; // default role
     private boolean isAdmin = false;
+
+    // HashMaps for search filtering (keys are date or location, values are lists of events)
+    private HashMap<String, List<Event>> dateMap = new HashMap<>();
+    private HashMap<String, List<Event>> locationMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +82,21 @@ public class EventListActivity extends AppCompatActivity
         recyclerView = findViewById(R.id.recyclerViewEvents);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         eventList = new ArrayList<>();
+        allEvents = new ArrayList<>();
         // Initially assume not admin. We'll update later after we fetch the role.
         eventAdapter = new EventAdapter(eventList, this, false);
         recyclerView.setAdapter(eventAdapter);
 
-        // Setup FloatingActionButton
+        // Setup Search Button (from activity_event_list.xml)
+        ImageButton btnSearchEvents = findViewById(R.id.btnSearchEvents);
+        btnSearchEvents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showSearchDialog();
+            }
+        });
+
+        // Setup FloatingActionButton for adding events
         fabAddEvent = findViewById(R.id.fabAddEvent);
         fabAddEvent.setOnClickListener(v -> {
             Intent intent = new Intent(EventListActivity.this, AddEditEventActivity.class);
@@ -109,7 +132,9 @@ public class EventListActivity extends AppCompatActivity
                         // Update nav menu: hide admin panel if not admin
                         Menu menu = navigationView.getMenu();
                         MenuItem adminItem = menu.findItem(R.id.nav_admin_panel);
-                        adminItem.setVisible(isAdmin);
+                        if(adminItem != null) {
+                            adminItem.setVisible(isAdmin);
+                        }
 
                         // Now fetch events based on role
                         fetchEvents();
@@ -134,13 +159,16 @@ public class EventListActivity extends AppCompatActivity
                     return;
                 }
                 eventList.clear();
+                allEvents.clear();
                 if (snapshots != null) {
                     for (QueryDocumentSnapshot doc : snapshots) {
                         Event event = doc.toObject(Event.class);
                         event.setEventId(doc.getId());
                         eventList.add(event);
+                        allEvents.add(event);
                     }
                 }
+                populateHashMaps();
                 eventAdapter.notifyDataSetChanged();
             });
         } else {
@@ -153,22 +181,129 @@ public class EventListActivity extends AppCompatActivity
                             return;
                         }
                         eventList.clear();
+                        allEvents.clear();
                         if (snapshots != null) {
                             for (QueryDocumentSnapshot doc : snapshots) {
                                 Event event = doc.toObject(Event.class);
                                 event.setEventId(doc.getId());
                                 eventList.add(event);
+                                allEvents.add(event);
                             }
                         }
+                        populateHashMaps();
                         eventAdapter.notifyDataSetChanged();
                     });
         }
     }
 
+    // Build hashmaps from the master list (allEvents) for date and location filtering
+    private void populateHashMaps() {
+        dateMap.clear();
+        locationMap.clear();
+        for (Event event : allEvents) {
+            String date = event.getDate();
+            String location = event.getLocation();
+
+            if (!dateMap.containsKey(date)) {
+                dateMap.put(date, new ArrayList<>());
+            }
+            dateMap.get(date).add(event);
+
+            if (!locationMap.containsKey(location)) {
+                locationMap.put(location, new ArrayList<>());
+            }
+            locationMap.get(location).add(event);
+        }
+    }
+
+    // Displays a dialog with two input fields for date and location filtering
+    private void showSearchDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(EventListActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_search, null);
+        builder.setView(dialogView);
+
+        final EditText etSearchDate = dialogView.findViewById(R.id.etSearchDate);
+        final EditText etSearchLocation = dialogView.findViewById(R.id.etSearchLocation);
+
+        // Set up DatePicker for the search date field
+        etSearchDate.setFocusable(false);
+        etSearchDate.setClickable(true);
+        etSearchDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar cal = Calendar.getInstance();
+                new DatePickerDialog(EventListActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
+                        etSearchDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+                    }
+                }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
+        builder.setTitle("Search Events");
+        builder.setPositiveButton("Search", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String searchDate = etSearchDate.getText().toString().trim();
+                String searchLocation = etSearchLocation.getText().toString().trim();
+                performSearch(searchDate, searchLocation);
+            }
+        });
+        builder.setNeutralButton("Clear", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // Clear search: restore original list of events
+                eventList.clear();
+                eventList.addAll(allEvents);
+                eventAdapter.notifyDataSetChanged();
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
+    }
+
+    // Filters events using the hashmaps based on provided search parameters
+    private void performSearch(String searchDate, String searchLocation) {
+        List<Event> filteredEvents = new ArrayList<>();
+
+        if (!searchDate.isEmpty() && !searchLocation.isEmpty()) {
+            List<Event> eventsByDate = dateMap.get(searchDate);
+            List<Event> eventsByLocation = locationMap.get(searchLocation);
+            if (eventsByDate != null && eventsByLocation != null) {
+                // Find the common events (by matching eventId)
+                for (Event event : eventsByDate) {
+                    for (Event ev : eventsByLocation) {
+                        if (event.getEventId().equals(ev.getEventId())) {
+                            filteredEvents.add(event);
+                            break;
+                        }
+                    }
+                }
+            }
+        } else if (!searchDate.isEmpty()) {
+            List<Event> eventsByDate = dateMap.get(searchDate);
+            if (eventsByDate != null) {
+                filteredEvents.addAll(eventsByDate);
+            }
+        } else if (!searchLocation.isEmpty()) {
+            List<Event> eventsByLocation = locationMap.get(searchLocation);
+            if (eventsByLocation != null) {
+                filteredEvents.addAll(eventsByLocation);
+            }
+        } else {
+            // If both fields are empty, show all events
+            filteredEvents.addAll(allEvents);
+        }
+
+        eventList.clear();
+        eventList.addAll(filteredEvents);
+        eventAdapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onEditClick(Event event) {
-        // Only called if user sees an Edit button (i.e., if isAdmin is true
-        // or you haven't hidden the button for normal users).
         Intent intent = new Intent(EventListActivity.this, AddEditEventActivity.class);
         intent.putExtra("event_id", event.getEventId());
         startActivity(intent);
@@ -176,7 +311,6 @@ public class EventListActivity extends AppCompatActivity
 
     @Override
     public void onDeleteClick(Event event) {
-        // Only admins see the delete button
         db.collection("events").document(event.getEventId())
                 .delete()
                 .addOnSuccessListener(aVoid -> fetchEvents())
@@ -190,7 +324,6 @@ public class EventListActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.nav_admin_panel) {
-            // Admin only
             startActivity(new Intent(EventListActivity.this, AdminPanelActivity.class));
         } else if (id == R.id.nav_events) {
             // Already here, or you can refresh

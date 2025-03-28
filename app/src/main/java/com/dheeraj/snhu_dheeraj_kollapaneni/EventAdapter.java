@@ -44,14 +44,15 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.eventName.setText(event.getName());
         holder.eventDate.setText(event.getDate());
         holder.eventTime.setText(event.getTime());
+        holder.eventLocation.setText(event.getLocation());
 
         // Show or hide the delete button based on isAdmin
         if (isAdmin) {
             holder.btnDelete.setVisibility(View.VISIBLE);
-            holder.btnEdit.setVisibility(View.VISIBLE); // If you want admins to edit from here too
+            holder.btnEdit.setVisibility(View.VISIBLE);
         } else {
             holder.btnDelete.setVisibility(View.GONE);
-            // If you also want to hide edit for normal users, do:
+            // Optionally hide edit button for normal users:
             // holder.btnEdit.setVisibility(View.GONE);
         }
 
@@ -66,7 +67,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
 
-        TextView eventName, eventDate, eventTime;
+        TextView eventName, eventDate, eventTime, eventLocation;
         ImageButton btnEdit, btnDelete;
 
         public EventViewHolder(@NonNull View itemView) {
@@ -74,6 +75,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             eventName = itemView.findViewById(R.id.tvEventName);
             eventDate = itemView.findViewById(R.id.tvEventDate);
             eventTime = itemView.findViewById(R.id.tvEventTime);
+            eventLocation = itemView.findViewById(R.id.tvEventLocation);
             btnEdit = itemView.findViewById(R.id.btnEdit);
             btnDelete = itemView.findViewById(R.id.btnDelete);
         }

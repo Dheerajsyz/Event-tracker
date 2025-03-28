@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="8dp">
 
     <TextView
         android:id="@+id/tvEventName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Event Name"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="HardcodedText" />
+        app:layout_constraintEnd_toStartOf="@+id/btnEdit" />
 
     <TextView
         android:id="@+id/tvEventDate"
@@ -21,8 +22,7 @@
         android:layout_height="wrap_content"
         android:text="Event Date"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvEventName"
-        tools:ignore="HardcodedText" />
+        app:layout_constraintTop_toBottomOf="@id/tvEventName" />
 
     <TextView
         android:id="@+id/tvEventTime"
@@ -30,8 +30,15 @@
         android:layout_height="wrap_content"
         android:text="Event Time"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvEventDate"
-        tools:ignore="HardcodedText" />
+        app:layout_constraintTop_toBottomOf="@id/tvEventDate" />
+
+    <TextView
+        android:id="@+id/tvEventLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event Location"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvEventTime" />
 
     <ImageButton
         android:id="@+id/btnEdit"
@@ -40,10 +47,9 @@
         android:contentDescription="Edit"
         android:background="?attr/selectableItemBackground"
         android:src="@android:drawable/ic_menu_edit"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:tint="?attr/colorPrimary"
-        tools:ignore="HardcodedText,UseAppTint" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:tint="?attr/colorPrimary" />
 
     <ImageButton
         android:id="@+id/btnDelete"
@@ -52,8 +58,8 @@
         android:contentDescription="Delete"
         android:background="?attr/selectableItemBackground"
         android:src="@android:drawable/ic_menu_delete"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnEdit"
-        android:tint="?attr/colorPrimary"
-        tools:ignore="HardcodedText,UseAppTint" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:tint="?attr/colorPrimary" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
